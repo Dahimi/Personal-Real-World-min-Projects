@@ -1,8 +1,10 @@
 package view;
 
-import java.awt.BorderLayout;
+import java.awt.BorderLayout; 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
@@ -19,25 +21,63 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
+import controller.*;
+import robotData.*;
 public class DialogBoxView extends JDialog {
+	private RobotController controller ;		
 	private static JOptionPane entryDialogBox ;
 	private static JOptionPane formDialogBox;
-	private RobotType typeDeRobot ;
-	private User user ;
-	private RobotDimension robotDimension ;
-	private ExternalInteraction externalInteraction ;
 	private JPanel centerPane = new JPanel(), imagePane  = new JPanel(), bottomPane  = new JPanel();
 	private JPanel userPane  = new JPanel(), externalPane  = new JPanel(), robotTypePane  = new JPanel(), dimensionPane  = new JPanel() ; 
 	private JButton submit_Button = new JButton("NEXT") , cancel_Button = new JButton("Cancel");
 	private JTextField jtName = new JTextField(),  jtEmail  = new JTextField() ;
 	private JPasswordField jPassword = new JPasswordField();
+	
 	private JTextField jExport = new JTextField(),  jImport  = new JTextField() , jArduino = new JTextField() ;
 	private JRadioButton deltaArticule	= new JRadioButton("Robot Delta Articulé") , deltaParallele = new JRadioButton("Robot Delta Parallèle") ;
 	private ButtonGroup bg = new ButtonGroup();
 	private JFormattedTextField jBase , jNacelle , jBras_sup , jBras_inf;
-	public DialogBoxView(JFrame parent, String title, boolean modal){    		
-		super(parent, title, modal);    		
+	
+	public JTextField getJtName() {
+		return jtName;
+	}
+	public JTextField getJtEmail() {
+		return jtEmail;
+	}
+	public JPasswordField getjPassword() {
+		return jPassword;
+	}
+	public JTextField getjExport() {
+		return jExport;
+	}
+	public JTextField getjImport() {
+		return jImport;
+	}
+	public JTextField getjArduino() {
+		return jArduino;
+	}
+	public JRadioButton getDeltaArticule() {
+		return deltaArticule;
+	}
+	public JRadioButton getDeltaParallele() {
+		return deltaParallele;
+	}
+	public JFormattedTextField getjBase() {
+		return jBase;
+	}
+	public JFormattedTextField getjNacelle() {
+		return jNacelle;
+	}
+	public JFormattedTextField getjBras_sup() {
+		return jBras_sup;
+	}
+	public JFormattedTextField getjBras_inf() {
+		return jBras_inf;
+	}
+	
+	public DialogBoxView(JFrame parent, String title, boolean modal , RobotController controller){    		
+		super(parent, title, modal);    
+		this.controller = controller ;
 		this.setSize(700, 700);    		
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
@@ -77,6 +117,24 @@ public class DialogBoxView extends JDialog {
 		imagePane.setPreferredSize(new Dimension(300,400));
 	}
 	private void configBottom() {
+		submit_Button.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.readRobotData();
+			}
+			
+		});
+		cancel_Button.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.cancel();
+			}
+			
+		});
 		bottomPane.add(submit_Button);
 		bottomPane.add(cancel_Button);
 	}
@@ -151,87 +209,8 @@ public class DialogBoxView extends JDialog {
 		dimensionPane.setBorder(BorderFactory.createTitledBorder("Les Dimensions du robot : "));
 		
 	}
-	public static class User {
-		private String userName , email , password;
-
-		public String getUserName() {
-			return userName;
-		}
-
-		public void setUserName(String userName) {
-			this.userName = userName;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-	}
-	public static class RobotDimension {
-		public  double nacelle = 60.0; // end effector
-		public  double base = 125.92; // base
-		public  double bras_inf = 299.51;
-		public  double bras_sup = 115.03;
-		public RobotDimension(double nacelle, double base, double bras_inf, double bras_sup) {
-			super();
-			this.nacelle = nacelle;
-			this.base = base;
-			this.bras_inf = bras_inf;
-			this.bras_sup = bras_sup;
-		}
-		
-	}
-	public static class ExternalInteraction {
-		private String  exportFile , importFile , arduinoPort ;
-
-		public ExternalInteraction(String exportFile, String importFile, String arduinoPort) {
-			super();
-			this.exportFile = exportFile;
-			this.importFile = importFile;
-			this.arduinoPort = arduinoPort;
-		}
-		public ExternalInteraction(String exportFile, String importFile) {
-			this.exportFile = exportFile;
-			this.importFile = importFile;
-
-		}
-		public ExternalInteraction(String exportFile) {
-			this.exportFile = exportFile;
-			
-		}
-		public String getExportFile() {
-			return exportFile;
-		}
-		public void setExportFile(String exportFile) {
-			this.exportFile = exportFile;
-		}
-		public String getImportFile() {
-			return importFile;
-		}
-		public void setImportFile(String importFile) {
-			this.importFile = importFile;
-		}
-		public String getArduinoPort() {
-			return arduinoPort;
-		}
-		public void setArduinoPort(String arduinoPort) {
-			this.arduinoPort = arduinoPort;
-		}
-	}
-	public enum RobotType{
-		ROBOT_ARTICULE,
-		ROBOT_PARALLELE
-	}
+	
+	
+	
 }
 

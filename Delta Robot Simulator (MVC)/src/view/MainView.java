@@ -39,8 +39,8 @@ public class MainView {
 	private JButton submit = new JButton("Submit") ;
 	
 	public void initWindow() {
-		dialogBox = new DialogBoxView(null, "Formulaire", true);
-		//dialogBox.startDialog();
+	    	dialogBox = new DialogBoxView(null, "Formulaire", true , null);
+		dialogBox.startDialog();
 		window.setTitle("Interface");
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		window.setUndecorated(false);
