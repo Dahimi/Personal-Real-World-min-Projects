@@ -9,7 +9,7 @@ import view.DialogBoxView;
 public class RobotModelImp implements RobotModel{
 	private Robot robot = new Robot();
 	
-	public RobotModelImp(RobotControllerImp robotControllerImp, DialogBoxView dialogView) {
+	public RobotModelImp(RobotControllerImp robotControllerImp) {
 		// TODO Auto-generated constructor stub
 	}
 

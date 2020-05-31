@@ -1,15 +1,21 @@
 package view;
-import java.awt.BorderLayout; 
+import java.awt.BorderLayout;  
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.awt.event.MouseListener;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
+
+import controller.RobotController;
+import robotModel.RobotModel;
 public class MainView {
-	private DialogBoxView dialogBox ;
+	private RobotController controller ;	
+	private RobotModel model ;
+	
+	
+
 	private JFrame window = new JFrame() ;
 	private JPanel workSpacePanel = new JPanel() , asidePanel = new JPanel() ;
 	private AnimationPanel.DrawPanel animationPanel = new AnimationPanel.DrawPanel(); 
@@ -38,9 +44,19 @@ public class MainView {
 	private JTextField jx = new JTextField(5) , jy= new JTextField(5) , jz= new JTextField(5) , jAngle1= new JTextField(5) ,jAngle2= new JTextField(5) , jAngle3= new JTextField(5) ;
 	private JButton submit = new JButton("Submit") ;
 	
+	public MainView() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public MainView(RobotController controller, RobotModel model) {
+		super();
+		this.controller = controller;
+		this.model = model;
+	}
+
+
 	public void initWindow() {
-	    	dialogBox = new DialogBoxView(null, "Formulaire", true , null);
-		dialogBox.startDialog();
 		window.setTitle("Interface");
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		window.setUndecorated(false);
@@ -94,7 +110,26 @@ public class MainView {
 		editMenu.add(penSize);
 		editMenu.add(penColor);
 		aboutMenu.add(userData);
+		userData.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.displayRobotInfo();
+			}
+			
+		});
+		
 		helpMenu.add(help);
+		help.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.help();
+			}
+			
+		});
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 		menuBar.add(animationMenu);
@@ -159,7 +194,5 @@ public class MainView {
 		asidePanel.setPreferredSize(new Dimension(300, 250));
 		window.getContentPane().add(BorderLayout.EAST ,asidePanel);
 	}
-	public static void main(String ...args) {
-		new MainView().initWindow();
-	}
+
 }

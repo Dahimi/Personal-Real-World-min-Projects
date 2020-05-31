@@ -5,12 +5,12 @@ import javax.swing.JRadioButton;
 
 import robotData.*;
 import robotModel.*;
-import view.DialogBoxView;
+import view.*;
 
 public class RobotControllerImp implements RobotController {
 	private DialogBoxView dialogView ;
 	private RobotModel model ;
-	
+	private MainView view ;
 	public static void main(String ...args) {
 		new RobotControllerImp().run();
 	}
@@ -18,7 +18,8 @@ public class RobotControllerImp implements RobotController {
 		// TODO Auto-generated constructor stub
 		System.out.println("Start");
 		dialogView = new DialogBoxView(null , "Les information sur le robot et l'utilisateur " , true , this);
-		model = new RobotModelImp(this, dialogView);
+		model = new RobotModelImp(this);
+		view = new MainView(this, model);
 	}
 	@Override
 	public void readRobotData() {
@@ -28,9 +29,10 @@ public class RobotControllerImp implements RobotController {
 		setType();
 		setExternal();
 		setDimension();
-		setRobot();
+		setRobot();		
 		dialogView.setVisible(false);
-		System.out.println(model.robotInfo());
+		runSimulator();
+		
 	 } catch(IllegalArgumentException e) {
 		 JOptionPane warning = new JOptionPane();
 		 warning.showMessageDialog(null, e.getMessage(), "Attention", JOptionPane.ERROR_MESSAGE);
@@ -38,6 +40,10 @@ public class RobotControllerImp implements RobotController {
 	 }
 	}
 
+	public void runSimulator() {
+		// TODO Auto-generated method stub
+		view.initWindow();
+	}
 	@Override
 	public void cancel() {
 		// TODO Auto-generated method stub
@@ -82,6 +88,18 @@ public class RobotControllerImp implements RobotController {
 		dialogView.startDialog();
 		
 	}
-	
+	public void displayRobotInfo() {
+		String robotInfo = model.robotInfo();
+		 JOptionPane info = new JOptionPane();
+		 info.showMessageDialog(null, robotInfo, "Informations", JOptionPane.INFORMATION_MESSAGE);
+		 
+		
+	}
+	public void help() {
+		String robotHelp = "Dans cette section , on va vous introduire au fonctionnement de ce simulateur";
+		 JOptionPane info = new JOptionPane();
+		 info.showMessageDialog(null, robotHelp, "Aide", JOptionPane.INFORMATION_MESSAGE);
+		 
+	}
 
 }
