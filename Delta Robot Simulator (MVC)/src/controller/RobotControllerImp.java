@@ -1,5 +1,8 @@
 package controller;
 
+import java.util.*;
+
+import javax.swing.*;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
@@ -11,6 +14,9 @@ public class RobotControllerImp implements RobotController {
 	private DialogBoxView dialogView ;
 	private RobotModel model ;
 	private MainView view ;
+	private List<JMenuItem> listRun;
+	private List<JMenuItem> listStop;
+	private List<JMenuItem> listIni;
 	public static void main(String ...args) {
 		new RobotControllerImp().run();
 	}
@@ -20,17 +26,39 @@ public class RobotControllerImp implements RobotController {
 		dialogView = new DialogBoxView(null , "Les information sur le robot et l'utilisateur " , true , this);
 		model = new RobotModelImp(this);
 		view = new MainView(this, model);
+		listRun = new ArrayList<JMenuItem>() {
+			{
+				add(view.getRunSimu());
+				add(view.getRunSimu2());
+				
+			}
+		};
+		listStop = new ArrayList<JMenuItem>() {
+			{
+				add(view.getStopSimu());
+				add(view.getStopSimu2());
+				
+			}
+		};
+		listIni = new ArrayList<JMenuItem>() {
+			{
+				add(view.getResetAnimation());								
+			}
+		};
 	}
 	@Override
 	public void readRobotData() {
 		// TODO Auto-generated method stub
 	 try {
+		 /*
 		setUser();
 		setType();
 		setExternal();
 		setDimension();
-		setRobot();		
+		setRobot();
+		*/		
 		dialogView.setVisible(false);
+		
 		runSimulator();
 		
 	 } catch(IllegalArgumentException e) {
@@ -101,5 +129,95 @@ public class RobotControllerImp implements RobotController {
 		 info.showMessageDialog(null, robotHelp, "Aide", JOptionPane.INFORMATION_MESSAGE);
 		 
 	}
+	@Override
+	public void exporter() {
+		// TODO Auto-generated method stub
+		System.out.println("Setting the export");
+		if(view.getExportArduino().isSelected()) model.setExportArduino(true);
+		else model.setExportArduino(false);
+		if(view.getExportToFile().isSelected()) model.setExportToFile(true);
+		else  model.setExportToFile(false);
+		
+	}
+	@Override
+	public void importer() {
+		System.out.println("Setting the import");
+		// TODO Auto-generated method stub
+		if(view.getImportFromFile().isSelected()) model.setImportFromFile(true);
+		else model.setImportFromFile(false);
+	}
+	@Override
+	public void setAnimation(Object source) {
+		System.out.println("Setting the animation");
+		// TODO Auto-generated method stub
+		if(source instanceof JMenuItem) {
+			JMenuItem item = (JMenuItem) source;
+			if(listRun.contains(item)) {
+				model.setAnimation("run");
+				enableList(listIni);
+				enableList(listStop);
+				disableList(listRun);
+			}
+			if(listStop.contains(item)) {
+				model.setAnimation("stop");
+				enableList(listIni);
+				enableList(listRun);
+				disableList(listStop);
+			}
+			if(listIni.contains(item)) {
+				model.setAnimation("Initialize");				
+			}
+		}
+	}
+	private void disableList(List<JMenuItem> list) {
+		for(JMenuItem item : list) item.setEnabled(false);
+	}
+	private void enableList(List<JMenuItem> list) {
+		for(JMenuItem item : list) item.setEnabled(true);
+	}
+	@Override
+	public void setFormat(Object source) {
+		// TODO Auto-generated method stub
+		System.out.println("Setting the format");
+		if( source instanceof JRadioButtonMenuItem ) {
+			
+			JRadioButtonMenuItem radioButton = (JRadioButtonMenuItem) source ;
+			if(radioButton.isSelected()) {
+			if(radioButton == view.getCarre()) {
+				
+				model.setFormat("square");
+				view.getSquare().doClick();
+			}
+			else if(radioButton == view.getRond()) {
+				model.setFormat("circle");
+				view.getCircle().doClick();
+			}
+			else  {
+				model.setFormat("triangle");
+				view.getTri().doClick();
+			}
+			}
+		}
+		else if(source instanceof JButton) {
+			
+			JButton button = (JButton) source;
+			
+				System.out.println("Setting the format is a JButton");
+			if(button == view.getSquare()) {
+				model.setFormat("square");
+				view.getCarre().setSelected(true);
+			}
+			else if(button == view.getCircle()) {
+				model.setFormat("circle");
+				view.getRond().setSelected(true);
+			}
+			else  {
+				model.setFormat("triangle");
+				view.getTriangle().setSelected(true);
+			}
+			
+		}
+	}
+	
 
 }

@@ -31,6 +31,10 @@ public class Robot {
 	}
 	@Override 
 	public String toString() {
+		try {
 		return user.toString() + "\n" + typeDeRobot.toString() + "\n" + robotDimension.toString() + "\n" + externalInteraction.toString();
-	}
+		} catch(NullPointerException e) {
+			return " les données indéfinies ";
+		}
+		}
 }

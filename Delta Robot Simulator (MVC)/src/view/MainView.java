@@ -16,6 +16,10 @@ public class MainView {
 	
 	
 
+	public JMenuItem getResetAnimation() {
+		return resetAnimation;
+	}
+
 	private JFrame window = new JFrame() ;
 	private JPanel workSpacePanel = new JPanel() , asidePanel = new JPanel() ;
 	private AnimationPanel.DrawPanel animationPanel = new AnimationPanel.DrawPanel(); 
@@ -27,12 +31,14 @@ public class MainView {
 	private JMenu formatMenu = new JMenu("Forme");
 	private JMenu aboutMenu = new JMenu("A propos ?");
 	private JMenu helpMenu = new JMenu("Aide");
-	private JMenu exportPath  = new JMenu("Exporter ...") , formatType = new JMenu("Type de forme ")   ;
-	private JMenuItem  drawTraject = new JMenuItem("Dessiner le trajet") ,  importPath  = new JMenuItem("Importer ...") ,runSimu2  = new JMenuItem("Lancer la simulation"), stopSimu2 = new JMenuItem("Arreter la simulation"),
+	private JMenu exportPath  = new JMenu("Exporter ...") , formatType = new JMenu("Type de forme ") , importPath  = new JMenu("Importer ...")  ;
+	private JMenuItem  runSimu2  = new JMenuItem("Lancer la simulation"), stopSimu2 = new JMenuItem("Arreter la simulation"),
 			resetAnimation = new JMenuItem("Réinitialiser l'animation") , runSimu  = new JMenuItem("Lancer la simulation"), stopSimu = new JMenuItem("Arreter la simulation"), penSize = new JMenuItem("la taille du pinceau") , penColor  = new JMenuItem("Coleur du pinceau"),			  
 			 userData = new JMenuItem("Données utilisateur") , help = new JMenuItem("Help");
-	private JRadioButtonMenuItem exportArduino = new JRadioButtonMenuItem("Exporter vers arduino"), exportToFile = new JRadioButtonMenuItem("Exporter vers fichier .txt") ,   carre = new JRadioButtonMenuItem("Carré"),	rond = new JRadioButtonMenuItem("Rond"),triangle = new JRadioButtonMenuItem("Triangle") ;
-	private  ButtonGroup exportGr = new ButtonGroup() , formGr = new ButtonGroup();
+	private JCheckBoxMenuItem exportArduino = new JCheckBoxMenuItem("Exporter vers arduino"), exportToFile = new JCheckBoxMenuItem("Exporter vers fichier .txt") ;  
+	private JRadioButtonMenuItem rond = new JRadioButtonMenuItem("Rond"),triangle = new JRadioButtonMenuItem("Triangle") ,carre = new JRadioButtonMenuItem("Carré"),
+								importFromFile = new  JRadioButtonMenuItem("Importer à partir d'un fichier") , drawPath = new JRadioButtonMenuItem("Dessiner le Trajet") ;
+	private  ButtonGroup importGr = new ButtonGroup() , formGr = new ButtonGroup();
 	private JToolBar toolBar = new JToolBar();
 	private JButton play = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\run.png")),
 	cancel = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\stop.png")),
@@ -72,6 +78,7 @@ public class MainView {
 		initEastPanel();
 		initPopUpMenu();
 		initWorkPlace();
+		addListeners();
 		window.setVisible(true);
 	}
 	private void initWorkPlace() {
@@ -82,18 +89,149 @@ public class MainView {
 		//workSpacePanel
 		window.getContentPane().add(workSpacePanel, BorderLayout.CENTER);
 	}
+	private void addListeners() {
+		ActionListener fileMenuListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				Object source = event.getSource();
+				if(source instanceof JCheckBoxMenuItem) {					
+					controller.exporter();
+				}
+				else if(source instanceof JRadioButtonMenuItem) {
+					controller.importer();
+				}				
+			}
+			
+		};
+		drawPath.addActionListener(fileMenuListener);
+		importFromFile.addActionListener(fileMenuListener);
+		exportArduino.addActionListener(fileMenuListener);
+		exportToFile.addActionListener(fileMenuListener);
+		ActionListener animationMenuListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				//JMenuItem source =(JMenuItem) event.getSource();
+				controller.setAnimation(event.getSource());
+			}			
+		};
+		runSimu.addActionListener(animationMenuListener);
+		runSimu2.addActionListener(animationMenuListener);
+		stopSimu.addActionListener(animationMenuListener);
+		stopSimu2.addActionListener(animationMenuListener);
+		resetAnimation.addActionListener(animationMenuListener);
+		play.addActionListener(animationMenuListener);
+		cancel.addActionListener(animationMenuListener);
+		ActionListener formatMenuListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				Object source =event.getSource();
+				controller.setFormat(source);
+			}			
+		};
+		rond.addActionListener(formatMenuListener);
+		circle.addActionListener(formatMenuListener);
+		square.addActionListener(formatMenuListener);
+		carre.addActionListener(formatMenuListener);
+		tri.addActionListener(formatMenuListener);
+		triangle.addActionListener(formatMenuListener);
+		
+	}
+	public JMenuItem getRunSimu2() {
+		return runSimu2;
+	}
+
+
+	public JMenuItem getStopSimu2() {
+		return stopSimu2;
+	}
+
+
+	public JMenuItem getRunSimu() {
+		return runSimu;
+	}
+
+
+	public JMenuItem getStopSimu() {
+		return stopSimu;
+	}
+
+
+	public JCheckBoxMenuItem getExportArduino() {
+		return exportArduino;
+	}
+
+
+	public JCheckBoxMenuItem getExportToFile() {
+		return exportToFile;
+	}
+
+
+	public JRadioButtonMenuItem getRond() {
+		return rond;
+	}
+
+
+	public JRadioButtonMenuItem getTriangle() {
+		return triangle;
+	}
+
+
+	public JRadioButtonMenuItem getCarre() {
+		return carre;
+	}
+
+
+	public JRadioButtonMenuItem getImportFromFile() {
+		return importFromFile;
+	}
+
+
+	public JRadioButtonMenuItem getDrawPath() {
+		return drawPath;
+	}
+
+
+	public JButton getPlay() {
+		return play;
+	}
+
+
+	public JButton getCancel() {
+		return cancel;
+	}
+
+
+	public JButton getSquare() {
+		return square;
+	}
+
+
+	public JButton getTri() {
+		return tri;
+	}
+
+
+	public JButton getCircle() {
+		return circle;
+	}
+
+
 	private void  initMenu() {
-		exportGr.add(exportArduino);
-		exportGr.add(exportToFile);
-		fileMenu.add(drawTraject);
+		importGr.add(drawPath);
+		importGr.add(importFromFile);
+		exportPath.add(exportArduino);
+		exportPath.add(exportToFile);
+		drawPath.setSelected(true);
+		importPath.add(drawPath);
+		importPath.add(importFromFile);
 		fileMenu.addSeparator();
 		fileMenu.add(importPath);
 		fileMenu.addSeparator();
 		fileMenu.add(exportPath);
-		fileMenu.addSeparator();
-		exportPath.add(exportArduino);
-		exportPath.add(exportToFile);
-		
+		fileMenu.addSeparator();		
 		formGr.add(rond);
 		formGr.add(carre); 
 		formGr.add(triangle);
@@ -111,24 +249,19 @@ public class MainView {
 		editMenu.add(penColor);
 		aboutMenu.add(userData);
 		userData.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				controller.displayRobotInfo();
-			}
-			
-		});
-		
+			}			
+		});		
 		helpMenu.add(help);
 		help.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				controller.help();
-			}
-			
+			}			
 		});
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
@@ -160,7 +293,7 @@ public class MainView {
 	}
 
 	private void initEastPanel() {
-		JPanel conversionPanel= new JPanel() , coordonatesPanel = new JPanel() , anglesPanel = new JPanel() ;
+		JPanel eastPanel = new JPanel(), conversionPanel= new JPanel() , coordonatesPanel = new JPanel() , anglesPanel = new JPanel() ;
 		JPanel  xPanel = new JPanel() , yPanel = new JPanel(), zPanel = new JPanel(), angle1Panel = new JPanel(), angle2Panel = new JPanel(), angle3Panel = new JPanel();
 		xPanel.add(xAxis);
 		xPanel.add(jx);
@@ -187,12 +320,15 @@ public class MainView {
 		conversionPanel.setLayout(new BoxLayout(conversionPanel, BoxLayout.X_AXIS));
 		conversionPanel.add(coordonatesPanel);
 		conversionPanel.add(anglesPanel);
-		asidePanel.setLayout(new BorderLayout());
-		asidePanel.add(BorderLayout.CENTER, conversionPanel);
-		asidePanel.add(BorderLayout.SOUTH , submit);
-		conversionPanel.setPreferredSize(new Dimension(300, 200));
-		asidePanel.setPreferredSize(new Dimension(300, 250));
+		eastPanel.setLayout(new BorderLayout());
+		eastPanel.add(BorderLayout.CENTER, conversionPanel);
+		eastPanel.add(BorderLayout.SOUTH , submit);
+		//conversionPanel.setPreferredSize(new Dimension(300, 200));
+		eastPanel.setPreferredSize(new Dimension(400, 250));
+		eastPanel.setBorder(BorderFactory.createEmptyBorder(10,0, 10, 20));
+		asidePanel.add(eastPanel);
 		window.getContentPane().add(BorderLayout.EAST ,asidePanel);
 	}
+	
 
 }

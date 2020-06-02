@@ -8,7 +8,10 @@ import view.DialogBoxView;
 
 public class RobotModelImp implements RobotModel{
 	private Robot robot = new Robot();
-	
+	private boolean importFromFile = false ;
+	private boolean exportArduino ;
+	private boolean exportToFile ;
+	private String format ;
 	public RobotModelImp(RobotControllerImp robotControllerImp) {
 		// TODO Auto-generated constructor stub
 	}
@@ -61,5 +64,41 @@ public class RobotModelImp implements RobotModel{
 	private boolean isIllegalString(String str) {
 		str = str.trim();
 		return str == null ? true : str.length() == 0 ;
+	}
+
+
+	@Override
+	public void setImportFromFile(boolean option) {
+		// TODO Auto-generated method stub
+		importFromFile = option;
+	}
+
+
+	@Override
+	public void setExportArduino(boolean option) {
+		// TODO Auto-generated method stub
+		exportArduino =  option;
+	}
+
+
+	@Override
+	public void setExportToFile(boolean option) {
+		// TODO Auto-generated method stub
+		exportToFile = option ;
+	}
+
+
+	@Override
+	public void setFormat(String format) {
+		// TODO Auto-generated method stub
+		this.format = format;		
+	}
+
+
+	@Override
+	public void setAnimation(String option) {
+		// TODO Auto-generated method stub
+		System.out.println("L'animation est :" + option + "\nLe foramt est : " + format + "\n Importer d'un fichier" + importFromFile + "\nExporter à arduino " + exportArduino + "\nExporter vers fichier" + exportToFile );
+		
 	}
 }

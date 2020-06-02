@@ -13,4 +13,9 @@ public interface RobotModel {
 
 	void setType(RobotType robotArticule);
 	String robotInfo();
+	void setImportFromFile(boolean option) ;
+	void setExportArduino(boolean option);
+	void setExportToFile(boolean option);
+	void setFormat(String format);
+	void setAnimation(String option);
 }
