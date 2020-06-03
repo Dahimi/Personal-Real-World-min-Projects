@@ -1,10 +1,9 @@
 package controller;
 
+import java.awt.event.MouseEvent;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 
 import robotData.*;
 import robotModel.*;
@@ -17,6 +16,7 @@ public class RobotControllerImp implements RobotController {
 	private List<JMenuItem> listRun;
 	private List<JMenuItem> listStop;
 	private List<JMenuItem> listIni;
+	private volatile boolean isMouseDragged = false ;
 	public static void main(String ...args) {
 		new RobotControllerImp().run();
 	}
@@ -157,15 +157,18 @@ public class RobotControllerImp implements RobotController {
 				enableList(listIni);
 				enableList(listStop);
 				disableList(listRun);
+				view.getRecordButton().setEnabled(false);
 			}
 			if(listStop.contains(item)) {
 				model.setAnimation("stop");
 				enableList(listIni);
 				enableList(listRun);
 				disableList(listStop);
+				view.getRecordButton().setEnabled(true);
 			}
 			if(listIni.contains(item)) {
-				model.setAnimation("Initialize");				
+				model.setAnimation("Initialize");
+				view.getRecordButton().setEnabled(true);
 			}
 		}
 	}
@@ -216,6 +219,43 @@ public class RobotControllerImp implements RobotController {
 				view.getTriangle().setSelected(true);
 			}
 			
+		}
+	}
+	@Override
+	public void mouseDragged(MouseEvent mouseEvent) {
+		// TODO Auto-generated method stub
+		if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
+			model.mouseDragged(mouseEvent);		
+		}		
+	}
+	@Override
+	public void mouseExited(MouseEvent mouseEvent) {
+		// TODO Auto-generated method stub
+		if(SwingUtilities.isLeftMouseButton(mouseEvent)) model.mouseExited(mouseEvent);			
+	}
+	@Override
+	public void mousePressed(MouseEvent mouseEvent) {
+		// TODO Auto-generated method stub
+		if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
+			model.mousePressed(mouseEvent);		
+		}
+	}
+	@Override
+	public void recording(JButton source) {
+		// TODO Auto-generated method stub
+		if(source.getIcon() == view.getRecordIcon()) {
+			source.setIcon(view.getStopRecordIcon());
+			disableList(listIni);
+			disableList(listStop);
+			disableList(listRun);
+			model.setRecording(true);
+		}
+		else {
+			source.setIcon(view.getRecordIcon());
+			disableList(listIni);
+			disableList(listStop);
+			enableList(listRun);
+			model.setRecording(false);
 		}
 	}
 	

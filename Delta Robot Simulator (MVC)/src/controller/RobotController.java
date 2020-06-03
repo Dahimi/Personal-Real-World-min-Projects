@@ -1,5 +1,8 @@
 package controller;
 
+import java.awt.event.MouseEvent;
+
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 
 public interface RobotController {
@@ -14,5 +17,9 @@ public interface RobotController {
 	void importer();
 	void setAnimation(Object object);
 	void setFormat(Object source);
+	void mouseDragged(MouseEvent mouseEvent);
+	void mouseExited(MouseEvent mouseEvent);
+	void mousePressed(MouseEvent mouseEvent);
+	void recording(JButton source);
 
 }

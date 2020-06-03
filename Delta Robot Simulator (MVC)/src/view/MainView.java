@@ -3,14 +3,19 @@ import java.awt.BorderLayout;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.*;
+import java.util.LinkedList;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
 import controller.RobotController;
+import robotModel.AnimationListener;
+import robotModel.ErrorListener;
 import robotModel.RobotModel;
-public class MainView {
+import robotModel.RobotModelImp.Point;
+public class MainView implements AnimationListener, ErrorListener {
 	private RobotController controller ;	
 	private RobotModel model ;
 	
@@ -19,7 +24,6 @@ public class MainView {
 	public JMenuItem getResetAnimation() {
 		return resetAnimation;
 	}
-
 	private JFrame window = new JFrame() ;
 	private JPanel workSpacePanel = new JPanel() , asidePanel = new JPanel() ;
 	private AnimationPanel.DrawPanel animationPanel = new AnimationPanel.DrawPanel(); 
@@ -28,6 +32,7 @@ public class MainView {
 	private JMenu fileMenu = new JMenu("Fichier");
 	private JMenu animationMenu = new JMenu("Animation");
 	private JMenu editMenu = new JMenu("Editer");
+	private JMenu editMenu2 = new JMenu("Editer");
 	private JMenu formatMenu = new JMenu("Forme");
 	private JMenu aboutMenu = new JMenu("A propos ?");
 	private JMenu helpMenu = new JMenu("Aide");
@@ -48,20 +53,28 @@ public class MainView {
 	private Color fondBouton = Color.white;
 	private JLabel xAxis = new JLabel("Coordonnée X :") , yAxis = new JLabel("Coordonnée Y :"), zAxis = new JLabel("Coordonnée Z :"), angle1 = new JLabel("Angle 1"), angle2 = new JLabel("Angle 2"), angle3 = new JLabel("Angle 3");
 	private JTextField jx = new JTextField(5) , jy= new JTextField(5) , jz= new JTextField(5) , jAngle1= new JTextField(5) ,jAngle2= new JTextField(5) , jAngle3= new JTextField(5) ;
-	private JButton submit = new JButton("Submit") ;
-	
+	private JButton submit = new JButton("Submit")  , recordButton;
+	public JButton getRecordButton() {
+		return recordButton;
+	}
+	private ImageIcon recordIcon = new ImageIcon( new ImageIcon("D:\\Professional developer\\record.png").getImage().getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH)),
+			stopRecordIcon = new ImageIcon( new ImageIcon("D:\\Professional developer\\stopreco.png").getImage().getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH));
+	public ImageIcon getRecordIcon() {
+		return recordIcon;
+	}
+	public void setRecordIcon(ImageIcon recordIcon) {
+		this.recordIcon = recordIcon;
+	}
 	public MainView() {
 		// TODO Auto-generated constructor stub
-	}
-	
-	
+	}	
 	public MainView(RobotController controller, RobotModel model) {
 		super();
 		this.controller = controller;
 		this.model = model;
+		model.registerAnimationListener(this);
+		model.registerErrorListener(this);
 	}
-
-
 	public void initWindow() {
 		window.setTitle("Interface");
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH); 
@@ -79,6 +92,8 @@ public class MainView {
 		initPopUpMenu();
 		initWorkPlace();
 		addListeners();
+		initMouseListeners(animationPanel);
+		initRecordButton();
 		window.setVisible(true);
 	}
 	private void initWorkPlace() {
@@ -88,6 +103,17 @@ public class MainView {
 		workSpacePanel.add(animationPanel);
 		//workSpacePanel
 		window.getContentPane().add(workSpacePanel, BorderLayout.CENTER);
+	}
+	private void  initRecordButton() {
+		recordButton = new JButton(recordIcon);
+		recordButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				controller.recording((JButton) event.getSource());
+			}			
+		});
+		toolBar.add(recordButton);
 	}
 	private void addListeners() {
 		ActionListener fileMenuListener = new ActionListener() {
@@ -192,33 +218,21 @@ public class MainView {
 	public JRadioButtonMenuItem getDrawPath() {
 		return drawPath;
 	}
-
-
 	public JButton getPlay() {
 		return play;
 	}
-
-
 	public JButton getCancel() {
 		return cancel;
 	}
-
-
 	public JButton getSquare() {
 		return square;
 	}
-
-
 	public JButton getTri() {
 		return tri;
 	}
-
-
 	public JButton getCircle() {
 		return circle;
 	}
-
-
 	private void  initMenu() {
 		importGr.add(drawPath);
 		importGr.add(importFromFile);
@@ -278,12 +292,15 @@ public class MainView {
 		toolBar.add(circle);
 		toolBar.add(square);
 		toolBar.add(tri);
+		toolBar.addSeparator();
+		toolBar.addSeparator();
+		
 		window.getContentPane().add(BorderLayout.NORTH , toolBar);
 	}
 	private void initPopUpMenu() {
 		popMenu.add(runSimu2);
 		popMenu.add(stopSimu2);
-		popMenu.add(editMenu);
+		popMenu.add(editMenu2);
 		animationPanel.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent event) {
 				if(event.isPopupTrigger()) popMenu.show(animationPanel, event.getX(), event.getY());
@@ -329,6 +346,49 @@ public class MainView {
 		asidePanel.add(eastPanel);
 		window.getContentPane().add(BorderLayout.EAST ,asidePanel);
 	}
-	
-
+	private void initMouseListeners(JPanel panel) {
+		// 
+		MouseInputAdapter mouserListener = new MouseInputAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent mouseEvent) {
+				// TODO Auto-generated method stub
+				controller.mouseDragged(mouseEvent);
+			}
+			@Override
+			public void mouseExited(MouseEvent mouseEvent) {
+				// TODO Auto-generated method stub
+				controller.mouseExited(mouseEvent);
+			}
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+				// TODO Auto-generated method stub
+				controller.mousePressed(mouseEvent);
+			}
+		};
+		animationPanel.addMouseListener(mouserListener);
+		animationPanel.addMouseMotionListener(mouserListener);
+	}
+	@Override
+	public void throwError(String errorMessage) {
+		// TODO Auto-generated method stub
+		JOptionPane warning = new JOptionPane();
+		 warning.showMessageDialog(null, errorMessage, "Attention", JOptionPane.ERROR_MESSAGE);		
+	}
+	@Override
+	public void updateAnimation(LinkedList<Point> points ) {
+		// TODO Auto-generated method stub
+		animationPanel.repaint(points);
+	}
+	public ImageIcon getStopRecordIcon() {
+		return stopRecordIcon;
+	}
+	public void setStopRecordIcon(ImageIcon stopRecordIcon) {
+		this.stopRecordIcon = stopRecordIcon;
+	}
+	@Override
+	public void enableRun() {
+		// TODO Auto-generated method stub
+		runSimu.setEnabled(true);
+		runSimu2.setEnabled(true);
+	}
 }
