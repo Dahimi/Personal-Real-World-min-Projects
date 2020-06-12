@@ -18,9 +18,6 @@ import robotModel.RobotModelImp.Point;
 public class MainView implements AnimationListener, ErrorListener {
 	private RobotController controller ;	
 	private RobotModel model ;
-	
-	
-
 	public JMenuItem getResetAnimation() {
 		return resetAnimation;
 	}
@@ -36,35 +33,27 @@ public class MainView implements AnimationListener, ErrorListener {
 	private JMenu formatMenu = new JMenu("Forme");
 	private JMenu aboutMenu = new JMenu("A propos ?");
 	private JMenu helpMenu = new JMenu("Aide");
-	private JMenu exportPath  = new JMenu("Exporter ...") , formatType = new JMenu("Type de forme ") , importPath  = new JMenu("Importer ...")  ;
+	private JMenu exportPath  = new JMenu("Exporter ...") , formatType = new JMenu("Type de forme ") , importPath  = new JMenu("Importer ...")  , penColor  = new JMenu("Coleur du pinceau");
 	private JMenuItem  runSimu2  = new JMenuItem("Lancer la simulation"), stopSimu2 = new JMenuItem("Arreter la simulation"),
-			resetAnimation = new JMenuItem("Réinitialiser l'animation") , runSimu  = new JMenuItem("Lancer la simulation"), stopSimu = new JMenuItem("Arreter la simulation"), penSize = new JMenuItem("la taille du pinceau") , penColor  = new JMenuItem("Coleur du pinceau"),			  
+			resetAnimation = new JMenuItem("Réinitialiser l'animation") , runSimu  = new JMenuItem("Lancer la simulation"), stopSimu = new JMenuItem("Arreter la simulation"), penSize = new JMenuItem("la taille du pinceau") ,			  
 			 userData = new JMenuItem("Données utilisateur") , help = new JMenuItem("Help");
+	private JRadioButtonMenuItem green = new JRadioButtonMenuItem("GREEN") , red = new JRadioButtonMenuItem("RED"), blue = new JRadioButtonMenuItem("BLUE");
+	private JButton redButton = new JButton("    ") , greenButton = new JButton("    ") , blueButton = new JButton("    ");
 	private JCheckBoxMenuItem exportArduino = new JCheckBoxMenuItem("Exporter vers arduino"), exportToFile = new JCheckBoxMenuItem("Exporter vers fichier .txt") ;  
 	private JRadioButtonMenuItem rond = new JRadioButtonMenuItem("Rond"),triangle = new JRadioButtonMenuItem("Triangle") ,carre = new JRadioButtonMenuItem("Carré"),
 								importFromFile = new  JRadioButtonMenuItem("Importer à partir d'un fichier") , drawPath = new JRadioButtonMenuItem("Dessiner le Trajet") ;
-	private  ButtonGroup importGr = new ButtonGroup() , formGr = new ButtonGroup();
+	private  ButtonGroup importGr = new ButtonGroup() , formGr = new ButtonGroup() , colorMenuGr =  new ButtonGroup() , colorButtonGr = new ButtonGroup();
 	private JToolBar toolBar = new JToolBar();
 	private JButton play = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\run.png")),
-	cancel = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\stop.png")),
-	square = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\carré.png")),
-	tri = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\triangle.png")),
-	circle = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\rond.png"));
+	cancel = new JButton(new ImageIcon("C:\\Users\\pc\\Pictures\\stop.png"));
 	private Color fondBouton = Color.white;
 	private JLabel xAxis = new JLabel("Coordonnée X :") , yAxis = new JLabel("Coordonnée Y :"), zAxis = new JLabel("Coordonnée Z :"), angle1 = new JLabel("Angle 1"), angle2 = new JLabel("Angle 2"), angle3 = new JLabel("Angle 3");
 	private JTextField jx = new JTextField(5) , jy= new JTextField(5) , jz= new JTextField(5) , jAngle1= new JTextField(5) ,jAngle2= new JTextField(5) , jAngle3= new JTextField(5) ;
 	private JButton submit = new JButton("Submit")  , recordButton;
-	public JButton getRecordButton() {
-		return recordButton;
-	}
 	private ImageIcon recordIcon = new ImageIcon( new ImageIcon("D:\\Professional developer\\record.png").getImage().getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH)),
 			stopRecordIcon = new ImageIcon( new ImageIcon("D:\\Professional developer\\stopreco.png").getImage().getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH));
-	public ImageIcon getRecordIcon() {
-		return recordIcon;
-	}
-	public void setRecordIcon(ImageIcon recordIcon) {
-		this.recordIcon = recordIcon;
-	}
+	
+	
 	public MainView() {
 		// TODO Auto-generated constructor stub
 	}	
@@ -139,7 +128,19 @@ public class MainView implements AnimationListener, ErrorListener {
 			public void actionPerformed(ActionEvent event) {
 				// TODO Auto-generated method stub
 				//JMenuItem source =(JMenuItem) event.getSource();
-				controller.setAnimation(event.getSource());
+				Object source = event.getSource();
+				if(source instanceof JButton) {
+					if((JButton) source == play) {
+						if(runSimu.isEnabled()) controller.setAnimation(runSimu);
+						return ;
+					}
+					if((JButton) source == cancel) {
+						if(stopSimu.isEnabled()) controller.setAnimation(stopSimu);
+						return ;
+					}
+					
+				}
+				controller.setAnimation(source);
 			}			
 		};
 		runSimu.addActionListener(animationMenuListener);
@@ -158,81 +159,62 @@ public class MainView implements AnimationListener, ErrorListener {
 			}			
 		};
 		rond.addActionListener(formatMenuListener);
-		circle.addActionListener(formatMenuListener);
-		square.addActionListener(formatMenuListener);
 		carre.addActionListener(formatMenuListener);
-		tri.addActionListener(formatMenuListener);
 		triangle.addActionListener(formatMenuListener);
+		userData.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.displayRobotInfo();
+			}			
+		});
+		help.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				controller.help();
+			}			
+		});
+		
+		ActionListener colorListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				AbstractButton source =(AbstractButton ) event.getSource();
+				Color color = Color.BLACK;
+				if(source instanceof JRadioButtonMenuItem) {
+					switch(source.getText()) {
+					case "RED" : color = Color.RED;
+						break;
+					case "GREEN" : color = Color.GREEN;
+					break;
+					case "BLUE" : color = Color.BLUE;
+					break;
+					}
+				}
+				else {
+					color = source.getBackground();
+				}
+				controller.setColor(color);
+			}			
+		};
+		
+		red.addActionListener(colorListener);
+		blue.addActionListener(colorListener);
+		green.addActionListener(colorListener);
+		redButton.addActionListener(colorListener);
+		blueButton.addActionListener(colorListener);
+		greenButton.addActionListener(colorListener);
+		submit.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				controller.drawCoordonates(jx.getText(), jy.getText(), jz.getText());					
+			}			
+		});
 		
 	}
-	public JMenuItem getRunSimu2() {
-		return runSimu2;
-	}
-
-
-	public JMenuItem getStopSimu2() {
-		return stopSimu2;
-	}
-
-
-	public JMenuItem getRunSimu() {
-		return runSimu;
-	}
-
-
-	public JMenuItem getStopSimu() {
-		return stopSimu;
-	}
-
-
-	public JCheckBoxMenuItem getExportArduino() {
-		return exportArduino;
-	}
-
-
-	public JCheckBoxMenuItem getExportToFile() {
-		return exportToFile;
-	}
-
-
-	public JRadioButtonMenuItem getRond() {
-		return rond;
-	}
-
-
-	public JRadioButtonMenuItem getTriangle() {
-		return triangle;
-	}
-
-
-	public JRadioButtonMenuItem getCarre() {
-		return carre;
-	}
-
-
-	public JRadioButtonMenuItem getImportFromFile() {
-		return importFromFile;
-	}
-
-
-	public JRadioButtonMenuItem getDrawPath() {
-		return drawPath;
-	}
-	public JButton getPlay() {
-		return play;
-	}
-	public JButton getCancel() {
-		return cancel;
-	}
-	public JButton getSquare() {
-		return square;
-	}
-	public JButton getTri() {
-		return tri;
-	}
-	public JButton getCircle() {
-		return circle;
-	}
+	
 	private void  initMenu() {
 		importGr.add(drawPath);
 		importGr.add(importFromFile);
@@ -249,9 +231,6 @@ public class MainView implements AnimationListener, ErrorListener {
 		formGr.add(rond);
 		formGr.add(carre); 
 		formGr.add(triangle);
-		formGr.add(circle);
-		formGr.add(square);
-		formGr.add(tri);
 		formatType.add(rond);
 		formatType.add(carre);
 		formatType.add(triangle);
@@ -259,24 +238,17 @@ public class MainView implements AnimationListener, ErrorListener {
 		animationMenu.add(runSimu);
 		animationMenu.add(stopSimu);
 		animationMenu.add(resetAnimation);
+		red.setSelected(true);
+		colorButtonGr.add(red);
+		colorButtonGr.add(green);
+		colorButtonGr.add(blue);
+		penColor.add(red);
+		penColor.add(green);
+		penColor.add(blue);
 		editMenu.add(penSize);
 		editMenu.add(penColor);
-		aboutMenu.add(userData);
-		userData.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				controller.displayRobotInfo();
-			}			
-		});		
+		aboutMenu.add(userData);				
 		helpMenu.add(help);
-		help.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				controller.help();
-			}			
-		});
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 		menuBar.add(animationMenu);
@@ -289,18 +261,30 @@ public class MainView implements AnimationListener, ErrorListener {
 		toolBar.add(play);
 		toolBar.add(cancel);
 		toolBar.addSeparator();
-		toolBar.add(circle);
-		toolBar.add(square);
-		toolBar.add(tri);
 		toolBar.addSeparator();
 		toolBar.addSeparator();
-		
+		redButton.setBackground(Color.RED);
+		greenButton.setBackground(Color.GREEN);
+		blueButton.setBackground(Color.BLUE);
+		redButton.setPreferredSize(new Dimension(20,20));
+		greenButton.setPreferredSize(new Dimension(20,20));
+		blueButton.setPreferredSize(new Dimension(20,20));
+		colorButtonGr.add(redButton);
+		colorButtonGr.add(greenButton);
+		colorButtonGr.add(blueButton);
+		redButton.setSelected(true);
+		toolBar.add(redButton);
+		toolBar.addSeparator();
+		toolBar.add(greenButton);
+		toolBar.addSeparator();
+		toolBar.add(blueButton);
+		toolBar.addSeparator();
+		toolBar.addSeparator();
 		window.getContentPane().add(BorderLayout.NORTH , toolBar);
 	}
 	private void initPopUpMenu() {
 		popMenu.add(runSimu2);
 		popMenu.add(stopSimu2);
-		popMenu.add(editMenu2);
 		animationPanel.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent event) {
 				if(event.isPopupTrigger()) popMenu.show(animationPanel, event.getX(), event.getY());
@@ -391,4 +375,128 @@ public class MainView implements AnimationListener, ErrorListener {
 		runSimu.setEnabled(true);
 		runSimu2.setEnabled(true);
 	}
+	public JMenuItem getRunSimu2() {
+		return runSimu2;
+	}
+
+
+	public JMenuItem getStopSimu2() {
+		return stopSimu2;
+	}
+
+
+	public JMenuItem getRunSimu() {
+		return runSimu;
+	}
+
+
+	public JMenuItem getStopSimu() {
+		return stopSimu;
+	}
+
+
+	public JCheckBoxMenuItem getExportArduino() {
+		return exportArduino;
+	}
+
+
+	public JCheckBoxMenuItem getExportToFile() {
+		return exportToFile;
+	}
+
+
+	public JRadioButtonMenuItem getRond() {
+		return rond;
+	}
+
+
+	public JRadioButtonMenuItem getTriangle() {
+		return triangle;
+	}
+
+
+	public JRadioButtonMenuItem getCarre() {
+		return carre;
+	}
+
+
+	public JRadioButtonMenuItem getImportFromFile() {
+		return importFromFile;
+	}
+
+
+	public JRadioButtonMenuItem getDrawPath() {
+		return drawPath;
+	}
+	public JButton getPlay() {
+		return play;
+	}
+	public JButton getCancel() {
+		return cancel;
+	}
+
+	public JButton getRecordButton() {
+		return recordButton;
+	}
+	public ImageIcon getRecordIcon() {
+		return recordIcon;
+	}
+	public void setRecordIcon(ImageIcon recordIcon) {
+		this.recordIcon = recordIcon;
+	}
+	public JRadioButtonMenuItem getGreen() {
+		return green;
+	}
+	public JRadioButtonMenuItem getRed() {
+		return red;
+	}
+	public JRadioButtonMenuItem getBlue() {
+		return blue;
+	}
+	public JButton getRedButton() {
+		return redButton;
+	}
+	public JButton getGreenButton() {
+		return greenButton;
+	}
+	public JButton getBlueButton() {
+		return blueButton;
+	}
+	public JTextField getJx() {
+		return jx;
+	}
+	public void setJx(JTextField jx) {
+		this.jx = jx;
+	}
+	public JTextField getJy() {
+		return jy;
+	}
+	public void setJy(JTextField jy) {
+		this.jy = jy;
+	}
+	public JTextField getJz() {
+		return jz;
+	}
+	public void setJz(JTextField jz) {
+		this.jz = jz;
+	}
+	public JTextField getjAngle1() {
+		return jAngle1;
+	}
+	public void setjAngle1(JTextField jAngle1) {
+		this.jAngle1 = jAngle1;
+	}
+	public JTextField getjAngle2() {
+		return jAngle2;
+	}
+	public void setjAngle2(JTextField jAngle2) {
+		this.jAngle2 = jAngle2;
+	}
+	public JTextField getjAngle3() {
+		return jAngle3;
+	}
+	public void setjAngle3(JTextField jAngle3) {
+		this.jAngle3 = jAngle3;
+	}
+
 }

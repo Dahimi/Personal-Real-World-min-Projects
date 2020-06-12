@@ -4,7 +4,7 @@ public  class RobotDimension {
 	public  double base = 125.92; // base
 	public  double bras_inf = 299.51;
 	public  double bras_sup = 115.03;
-	public RobotDimension(double nacelle, double base, double bras_inf, double bras_sup) {
+	public RobotDimension(double base, double nacelle, double bras_sup, double bras_inf) {
 		super();
 		this.nacelle = nacelle;
 		this.base = base;

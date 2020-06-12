@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
@@ -21,5 +22,7 @@ public interface RobotController {
 	void mouseExited(MouseEvent mouseEvent);
 	void mousePressed(MouseEvent mouseEvent);
 	void recording(JButton source);
+	void setColor(Color color);
+	void drawCoordonates(String X, String Y, String Z);
 
 }

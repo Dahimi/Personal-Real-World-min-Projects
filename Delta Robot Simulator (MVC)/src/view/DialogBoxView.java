@@ -30,13 +30,13 @@ public class DialogBoxView extends JDialog {
 	private JPanel centerPane = new JPanel(), imagePane  = new JPanel(), bottomPane  = new JPanel();
 	private JPanel userPane  = new JPanel(), externalPane  = new JPanel(), robotTypePane  = new JPanel(), dimensionPane  = new JPanel() ; 
 	private JButton submit_Button = new JButton("NEXT") , cancel_Button = new JButton("Cancel");
-	private JTextField jtName = new JTextField(),  jtEmail  = new JTextField() ;
-	private JPasswordField jPassword = new JPasswordField();
+	private JTextField jtName = new JTextField("Soufiane Dahimi"),  jtEmail  = new JTextField("Soufiane.DAHIMI@emines.um6p.ma") ;
+	private JPasswordField jPassword = new JPasswordField("slmqmqsdq");
 	
-	private JTextField jExport = new JTextField(),  jImport  = new JTextField() , jArduino = new JTextField() ;
+	private JTextField jExport = new JTextField("D:\\Elearning"),  jImport  = new JTextField() , jArduino = new JTextField() ;
 	private JRadioButton deltaArticule	= new JRadioButton("Robot Delta Articulé") , deltaParallele = new JRadioButton("Robot Delta Parallèle") ;
 	private ButtonGroup bg = new ButtonGroup();
-	private JFormattedTextField jBase , jNacelle , jBras_sup , jBras_inf;
+	private JTextField jBase , jNacelle , jBras_sup , jBras_inf;
 	
 	public JTextField getJtName() {
 		return jtName;
@@ -62,16 +62,16 @@ public class DialogBoxView extends JDialog {
 	public JRadioButton getDeltaParallele() {
 		return deltaParallele;
 	}
-	public JFormattedTextField getjBase() {
+	public JTextField getjBase() {
 		return jBase;
 	}
-	public JFormattedTextField getjNacelle() {
+	public JTextField getjNacelle() {
 		return jNacelle;
 	}
-	public JFormattedTextField getjBras_sup() {
+	public JTextField getjBras_sup() {
 		return jBras_sup;
 	}
-	public JFormattedTextField getjBras_inf() {
+	public JTextField getjBras_inf() {
 		return jBras_inf;
 	}
 	
@@ -142,7 +142,7 @@ public class DialogBoxView extends JDialog {
 		JLabel nom = new JLabel("Username :") , email = new JLabel("email :") , password = new JLabel("Mot de pass :");
 		JPanel namePanel = new JPanel() , emailPanel = new JPanel(), passPanel = new JPanel();
 		jtName.setPreferredSize(new Dimension(100, 25));
-		jtEmail.setPreferredSize(new Dimension(100, 25));
+		jtEmail.setPreferredSize(new Dimension(220, 25));
 		jPassword.setPreferredSize(new Dimension(100, 25));
 		namePanel.add(nom);
 		namePanel.add(jtName);
@@ -178,16 +178,17 @@ public class DialogBoxView extends JDialog {
 		robotTypePane.setBorder(BorderFactory.createTitledBorder("L'archeticture du robot"));
 		bg.add(deltaArticule);
 		bg.add(deltaParallele);
+		deltaArticule.setSelected(true);
 		robotTypePane.add(deltaArticule);
 		robotTypePane.add(deltaParallele);
 		
 	}
 	private void configDimension() {
 		JLabel base = new JLabel("Rayon de la base (mm)") , nacelle = new JLabel("rayon de la nacelle (mm) :") , bras_sup = new JLabel("Longueur du bras Sup (mm) :"), bras_inf = new JLabel("Longueur du bras inf (mm) :");
-		jBase = new JFormattedTextField (NumberFormat.getIntegerInstance());
-		jNacelle = new JFormattedTextField (NumberFormat.getIntegerInstance());
-		jBras_sup = new JFormattedTextField (NumberFormat.getIntegerInstance());
-		jBras_inf = new JFormattedTextField (NumberFormat.getIntegerInstance());
+		jBase = new JTextField("123.68");
+		jNacelle = new JTextField("50.00");
+		jBras_sup =new JTextField("115.03");
+		jBras_inf = new JTextField("299.01");
 		jBase.setPreferredSize(new Dimension(100, 25));
 		jNacelle.setPreferredSize(new Dimension(100, 25));
 		jBras_sup.setPreferredSize(new Dimension(100, 25));

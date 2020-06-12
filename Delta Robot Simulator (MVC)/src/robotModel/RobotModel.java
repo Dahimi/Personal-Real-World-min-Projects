@@ -1,5 +1,6 @@
 package robotModel;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,4 +34,9 @@ public interface RobotModel {
 	void mouseExited(MouseEvent mouseEvent);
 	void mousePressed(MouseEvent mouseEvent);
 	void setRecording(boolean isRecording);
+	void setPointerColor(Color color);
+    void drawCircle();
+    void drawSquare();
+    void drawTriangle();
+	String[] drawCoordonates(double x, double y, double z);
 }

@@ -1,10 +1,9 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.util.*;
-
 import javax.swing.*;
-
 import robotData.*;
 import robotModel.*;
 import view.*;
@@ -50,15 +49,14 @@ public class RobotControllerImp implements RobotController {
 	public void readRobotData() {
 		// TODO Auto-generated method stub
 	 try {
-		 /*
+		 
 		setUser();
 		setType();
 		setExternal();
 		setDimension();
 		setRobot();
-		*/		
-		dialogView.setVisible(false);
-		
+				
+		dialogView.setVisible(false);		
 		runSimulator();
 		
 	 } catch(IllegalArgumentException e) {
@@ -76,6 +74,7 @@ public class RobotControllerImp implements RobotController {
 	public void cancel() {
 		// TODO Auto-generated method stub
 		dialogView.setVisible(false);
+		System.exit(0);
 	}
 
 	@Override
@@ -186,39 +185,16 @@ public class RobotControllerImp implements RobotController {
 			
 			JRadioButtonMenuItem radioButton = (JRadioButtonMenuItem) source ;
 			if(radioButton.isSelected()) {
-			if(radioButton == view.getCarre()) {
-				
+			if(radioButton == view.getCarre()) {				
 				model.setFormat("square");
-				view.getSquare().doClick();
 			}
 			else if(radioButton == view.getRond()) {
 				model.setFormat("circle");
-				view.getCircle().doClick();
 			}
 			else  {
 				model.setFormat("triangle");
-				view.getTri().doClick();
 			}
 			}
-		}
-		else if(source instanceof JButton) {
-			
-			JButton button = (JButton) source;
-			
-				System.out.println("Setting the format is a JButton");
-			if(button == view.getSquare()) {
-				model.setFormat("square");
-				view.getCarre().setSelected(true);
-			}
-			else if(button == view.getCircle()) {
-				model.setFormat("circle");
-				view.getRond().setSelected(true);
-			}
-			else  {
-				model.setFormat("triangle");
-				view.getTriangle().setSelected(true);
-			}
-			
 		}
 	}
 	@Override
@@ -256,6 +232,53 @@ public class RobotControllerImp implements RobotController {
 			disableList(listStop);
 			enableList(listRun);
 			model.setRecording(false);
+		}
+	}
+	@Override
+	public void setColor(Color color) {
+		// TODO Auto-generated method stub
+		if(color == Color.RED) {
+			view.getRed().setSelected(true);
+			//view.getRedButton().doClick(3);
+		}
+		else if(color == Color.GREEN) {
+			view.getGreen().setSelected(true);
+			//view.getGreenButton().doClick(3);
+		}
+		else {
+			view.getBlue().setSelected(true);
+			//view.getBlueButton().doClick(3);
+		}
+		model.setPointerColor(color);
+	}
+	@Override
+	public void drawCoordonates(String X, String Y, String Z) {
+		// TODO Auto-generated method stub
+		view.getjAngle1().setText("");
+		view.getjAngle2().setText("");
+		view.getjAngle3().setText("");
+		try {		
+		double x = Double.parseDouble(X);
+		double y = Double.parseDouble(Y);
+		double z = Double.parseDouble(Z);
+		String[] response ;
+		 if( (response = model.drawCoordonates(x, y  ,z)) != null) {
+			 if(response[0] != null) {
+				 JOptionPane info = new JOptionPane();
+				 info.showMessageDialog(null, response[0], "Informations", JOptionPane.INFORMATION_MESSAGE);
+			 }
+			 double theat1 = Double.parseDouble(response[1]);
+			 double theat2 = Double.parseDouble(response[2]);
+			 double theat3 = Double.parseDouble(response[3]);
+			 view.getjAngle1().setText(String.format("%.2f",theat1));
+			 view.getjAngle2().setText(String.format("%.2f",theat2));
+			 view.getjAngle3().setText(String.format("%.2f",theat3));
+		 }
+		}catch(Exception e) {
+			e.printStackTrace();
+			 JOptionPane warning = new JOptionPane();
+			 warning.showMessageDialog(null, "Les coordonnées que vous avez entrées ont un format non compatible", "Attention", JOptionPane.ERROR_MESSAGE);
+			 
 		}
 	}
 	
