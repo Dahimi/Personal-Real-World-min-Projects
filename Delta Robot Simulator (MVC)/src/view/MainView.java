@@ -40,7 +40,7 @@ public class MainView implements AnimationListener, ErrorListener {
 	private JRadioButtonMenuItem green = new JRadioButtonMenuItem("GREEN") , red = new JRadioButtonMenuItem("RED"), blue = new JRadioButtonMenuItem("BLUE");
 	private JButton redButton = new JButton("    ") , greenButton = new JButton("    ") , blueButton = new JButton("    ");
 	private JCheckBoxMenuItem exportArduino = new JCheckBoxMenuItem("Exporter vers arduino"), exportToFile = new JCheckBoxMenuItem("Exporter vers fichier .txt") ;  
-	private JRadioButtonMenuItem rond = new JRadioButtonMenuItem("Rond"),triangle = new JRadioButtonMenuItem("Triangle") ,carre = new JRadioButtonMenuItem("Carré"),
+	private JRadioButtonMenuItem rond = new JRadioButtonMenuItem("Rond"),triangle = new JRadioButtonMenuItem("Hélice") ,carre = new JRadioButtonMenuItem("Carré"),
 								importFromFile = new  JRadioButtonMenuItem("Importer à partir d'un fichier") , drawPath = new JRadioButtonMenuItem("Dessiner le Trajet") ;
 	private  ButtonGroup importGr = new ButtonGroup() , formGr = new ButtonGroup() , colorMenuGr =  new ButtonGroup() , colorButtonGr = new ButtonGroup();
 	private JToolBar toolBar = new JToolBar();

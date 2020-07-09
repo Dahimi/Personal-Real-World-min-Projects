@@ -45,7 +45,7 @@ public class RobotModelImp implements RobotModel{
 		public void run() {
 			// TODO Auto-generated method stub
 					
-			for(int j = 0 ; j < 10 ; j++) {
+			for(int j = 0 ; j < 100 ; j++) {
 		     phaser.arriveAndAwaitAdvance(); 
 			LinkedList<Point> printedPoints = new LinkedList<Point>();
 			LinkedList<Point> iteratedList = new LinkedList<Point>(points);		
@@ -75,7 +75,7 @@ public class RobotModelImp implements RobotModel{
 					}
 				}				
 				try {
-					Thread.sleep(300);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 				}				
 				if(exportToFile) {
@@ -155,10 +155,11 @@ public class RobotModelImp implements RobotModel{
 		}		
 	}
 	@Override
-	public void setType(RobotType robotArticule) {
+	public void setType(RobotType type) {
 		// TODO Auto-generated method stub
-		if(robotArticule == null) throw new IllegalArgumentException("vous n'avez pas spécifié le type du robot  !");
-		robot.setTypeDeRobot(robotArticule);		
+		if(type == null) throw new IllegalArgumentException("vous n'avez pas spécifié le type du robot  !");
+		robot.setTypeDeRobot(type);		
+		Point.commanZ = (type == RobotType.ROBOT_ARTICULE) ? -220 : -150 ;
 	}
 	public String robotInfo() {
 		return robot.toString();
@@ -225,7 +226,8 @@ public class RobotModelImp implements RobotModel{
 		private int x = -10;
 		//Position sur l'axe Y : initialisé au dehors du conteneur
 		private int y = -10;
-		private double z = -300 ;
+		public static double commanZ = -220;
+		private double z = commanZ ;
 		//Type de point
 		private String type = "ROND";
 		public Point(){}
@@ -281,7 +283,7 @@ public class RobotModelImp implements RobotModel{
 		public  class RealPoint{
 			private double x ;
 			private double y ;
-			private double z = -300;
+			private double z = -220;
 			private double theta1 , theta2 ,theta3 ;
 			  final double pi = Math.PI;
 			  final double sqrt3 = Math.sqrt(3.0);
@@ -328,10 +330,14 @@ public class RobotModelImp implements RobotModel{
 				return distance / robotSpeed ;			
 			}
 			public void writePoint(PrintWriter fileWriter1 ,PrintWriter fileWriter2 ,PrintWriter fileWriter3 , double time) throws Exception {
+			if(	robot.getTypeDeRobot() == RobotType.ROBOT_ARTICULE) {
 				if( delta_calcInverse(x, y, z) == 1) {
 			    	   throw new Exception("Un des points que vous avez saisi est hors l'espace de travail !!");			    	   			    	
 			       }
-			       
+			}
+			else {
+				inverseKinParallelDelta(x, y, z);
+			}
 			        System.out.println(time + "," + theta1);
 			        System.out.println(time + "," + theta2);
 			        System.out.println(time + "," + theta3);
@@ -340,8 +346,14 @@ public class RobotModelImp implements RobotModel{
 			     fileWriter3.println(time + "," + theta3);
 			     //System.out.println("method is called");
 			}
-			
-			 public  int delta_calcAngleYZ(double x0, double y0, double z0, int thetaIndex) {			 
+			private void inverseKinParallelDelta(double x , double y , double z) {
+				System.out.println("parallele");
+			        double L=300, D=75.055, n=0.5235987756;	                	                
+	                theta1=z+Math.sqrt(Math.pow(L,2)-Math.pow(x,2)-Math.pow(y+D,2));	                     	 
+	                theta2=z+Math.sqrt(Math.pow(L,2)-Math.pow(x-D*Math.cos(n),2)-Math.pow(y-D*Math.sin(n),2));
+	                theta3=z+Math.sqrt(Math.pow(L,2)-Math.pow(x+D*Math.cos(n),2)-Math.pow(y-D*Math.sin(n),2));	                          
+			}
+			public  int delta_calcAngleYZ(double x0, double y0, double z0, int thetaIndex) {			 
 			double e = robotDimension.nacelle , f= robotDimension.base , re = robotDimension.bras_inf , rf = robotDimension.bras_sup;
 			/*  f = 123.68; // base
 			  e = 50.0; // nacelle
@@ -490,8 +502,17 @@ public class RobotModelImp implements RobotModel{
 	@Override
 	public void drawTriangle() {
 		// TODO Auto-generated method stub
-		//throw new UnsupportedOperationException();
-		notifyErrorListeners("This form is still under develepement : stay tuned ! ");
+		points = new LinkedList<Point>();
+		 double rayon = 30 ;
+   	 double partialAngle = 2*Math.PI / 40 ;
+   	 double x , y , z = -220;
+   	 for(int i = 0 ; i < 80 ; i++) {
+   		 x = rayon * Math.cos(partialAngle * i);
+   	     y = rayon * Math.sin(partialAngle * i);
+   	     z--;
+   	       points.add( createPoint(new RealPoint(x, y,z)));
+   	 }
+   	 System.out.println("l'hélice is created");
 	}
 	@Override
 	public String[] drawCoordonates(double x, double y, double z) {
@@ -504,7 +525,7 @@ public class RobotModelImp implements RobotModel{
 				notifyErrorListeners("Les coordonnées que vous avez entrées dépassent l'espace de travail");				
 				return null ;
 			}
-			if(z!= -300) 
+			if(z!= -220) 
 	        response[0] = "Il faut noter que ce simulateur ne supporte pas des simulation 3D \n On va dessiner la projection de ce point dans le plan 2D \n Pourtant votre fichier arduino ou texte va bel et bien recevoir ces coordonnées sans aucun problème ";
 			else response[0] = null;
 			response[1] = "" + point.theta1;

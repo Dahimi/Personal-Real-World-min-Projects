@@ -1,8 +1,14 @@
 package controller;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import robotData.*;
 import robotModel.*;
@@ -16,12 +22,13 @@ public class RobotControllerImp implements RobotController {
 	private List<JMenuItem> listStop;
 	private List<JMenuItem> listIni;
 	private volatile boolean isMouseDragged = false ;
+	private JFrame backgroundFrame = new JFrame();
 	public static void main(String ...args) {
 		new RobotControllerImp().run();
 	}
 	public  RobotControllerImp() {
 		// TODO Auto-generated constructor stub
-		System.out.println("Start");
+		//System.out.println("Start");
 		dialogView = new DialogBoxView(null , "Les information sur le robot et l'utilisateur " , true , this);
 		model = new RobotModelImp(this);
 		view = new MainView(this, model);
@@ -56,7 +63,8 @@ public class RobotControllerImp implements RobotController {
 		setDimension();
 		setRobot();
 				
-		dialogView.setVisible(false);		
+		dialogView.setVisible(false);
+		backgroundFrame.setVisible(false);
 		runSimulator();
 		
 	 } catch(IllegalArgumentException e) {
@@ -74,6 +82,7 @@ public class RobotControllerImp implements RobotController {
 	public void cancel() {
 		// TODO Auto-generated method stub
 		dialogView.setVisible(false);
+		backgroundFrame.setVisible(false);
 		System.exit(0);
 	}
 
@@ -111,8 +120,16 @@ public class RobotControllerImp implements RobotController {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		dialogView.startDialog();
+		
+		try {
+	            backgroundFrame.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\pc\\Pictures\\back2.png")))));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+		 backgroundFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		 backgroundFrame.setUndecorated(false);
+		 backgroundFrame.setVisible(true);
+		 dialogView.startDialog();
 		
 	}
 	public void displayRobotInfo() {
@@ -193,6 +210,9 @@ public class RobotControllerImp implements RobotController {
 			}
 			else  {
 				model.setFormat("triangle");
+				JOptionPane info = new JOptionPane();
+				info.showMessageDialog(null, "Il faut noter que ce simulateur ne supporte pas des simulation 3D \n On va dessiner la projection de ce point dans le plan 2D \n Pourtant votre fichier arduino ou texte va bel et bien recevoir ces coordonnées sans aucun problème ", "Informations", JOptionPane.INFORMATION_MESSAGE);
+			 
 			}
 			}
 		}
@@ -275,7 +295,7 @@ public class RobotControllerImp implements RobotController {
 			 view.getjAngle3().setText(String.format("%.2f",theat3));
 		 }
 		}catch(Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			 JOptionPane warning = new JOptionPane();
 			 warning.showMessageDialog(null, "Les coordonnées que vous avez entrées ont un format non compatible", "Attention", JOptionPane.ERROR_MESSAGE);
 			 
